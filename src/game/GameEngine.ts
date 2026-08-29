@@ -50,7 +50,7 @@ export class GameEngine {
   level: number = 1;
   score: number = 0;
   kills: number = 0;
-  state: 'MENU' | 'PLAYING' | 'PAUSED' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION' = 'MENU';
+  state: 'MENU' | 'PLAYING' | 'PAUSED' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION' | 'TARGET_POPUP' = 'MENU';
 
   targetNumber: number = 0;
   remainingTanks: number = 0;
@@ -136,7 +136,10 @@ export class GameEngine {
       this.keys[e.key.toLowerCase()] = true;
       this.keys[e.key] = true;
 
-      if (e.key === ' ' && this.state === 'PLAYING') {
+      if ((e.key === ' ' || e.key === 'Enter') && this.state === 'TARGET_POPUP') {
+        e.preventDefault();
+        this.resumeFromTarget();
+      } else if (e.key === ' ' && this.state === 'PLAYING') {
         e.preventDefault();
         this.shoot();
       } else if ((e.key === 'p' || e.key === 'P') && (this.state === 'PLAYING' || this.state === 'PAUSED')) {
@@ -155,8 +158,26 @@ export class GameEngine {
     this.keys[key.toLowerCase()] = pressed;
     this.keys[key] = pressed;
 
-    if (pressed && key === ' ' && this.state === 'PLAYING') {
+    if (pressed && key === ' ' && this.state === 'TARGET_POPUP') {
+      this.resumeFromTarget();
+    } else if (pressed && key === ' ' && this.state === 'PLAYING') {
       this.shoot();
+    }
+  }
+
+  pauseForTarget() {
+    if (this.state === 'PLAYING') {
+      this.state = 'TARGET_POPUP';
+      if (this.onStateChange) this.onStateChange(this.state);
+    }
+  }
+
+  resumeFromTarget() {
+    if (this.state === 'TARGET_POPUP') {
+      this.state = 'PLAYING';
+      this.lastTime = performance.now();
+      if (this.onStateChange) this.onStateChange(this.state);
+      requestAnimationFrame(this.loop.bind(this));
     }
   }
 
@@ -177,7 +198,7 @@ export class GameEngine {
     this.score = score;
     this.player = this.createPlayer();
     this.player.lives = lives;
-    this.state = 'PLAYING';
+    this.state = 'TARGET_POPUP';
     this.bullets = [];
     this.enemies = [];
     this.powerups = [];
@@ -889,7 +910,7 @@ export class GameEngine {
         this.state = 'VICTORY';
         if (this.onStateChange) this.onStateChange(this.state);
       } else {
-        this.state = 'PLAYING';
+        this.state = 'TARGET_POPUP';
         this.kills = 0;
         this.remainingTanks = getKillsRequiredForLevel(this.level);
         this.enemies = [];

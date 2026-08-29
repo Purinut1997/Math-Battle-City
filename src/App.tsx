@@ -11,7 +11,7 @@ export default function App() {
   const engineRef = useRef<GameEngine | null>(null);
 
   const [gameState, setGameState] = useState<
-    'MENU' | 'PLAYING' | 'หยุดพักเกม' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION'
+    'MENU' | 'PLAYING' | 'PAUSED' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION' | 'TARGET_POPUP'
   >('MENU');
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -21,16 +21,6 @@ export default function App() {
   const [isMuted, setIsMuted] = useState(false);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const [showTargetPopup, setShowTargetPopup] = useState(false);
-
-  // Trigger popup when level or target changes
-  useEffect(() => {
-    if (gameState === 'PLAYING' && targetNumber > 0) {
-      setShowTargetPopup(true);
-      const t = setTimeout(() => setShowTargetPopup(false), 3000);
-      return () => clearTimeout(t);
-    }
-  }, [level, targetNumber, gameState]);
 
   // Detect touch device
   useEffect(() => {
@@ -142,7 +132,7 @@ export default function App() {
                 timer={timer}
                 targetNumber={targetNumber}
                 isMuted={isMuted}
-                isPaused={gameState === 'หยุดพักเกม'}
+                isPaused={gameState === 'PAUSED'}
                 onToggleSound={handleToggleSound}
                 onTogglePause={handleTogglePause}
               />
@@ -282,7 +272,7 @@ export default function App() {
             )}
 
             {/* พักเกม OVERLAY */}
-            {gameState === 'หยุดพักเกม' && (
+            {gameState === 'PAUSED' && (
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-center z-30 animate-fade-in">
                 <h3 className="font-orbitron text-4xl sm:text-5xl font-black text-white/90 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] tracking-[0.2em] mb-8">
                   หยุดพักเกม
@@ -300,17 +290,35 @@ export default function App() {
             )}
 
             {/* TARGET NOTIFICATION POPUP */}
-            {showTargetPopup && gameState === 'PLAYING' && (
-              <div className="absolute inset-x-0 top-1/4 flex justify-center z-20 pointer-events-none animate-[slide-down_0.3s_ease-out]">
-                <div className="bg-black/60 backdrop-blur-md border border-cyan-500/50 px-8 py-4 rounded-3xl shadow-[0_0_40px_rgba(34,211,238,0.4)] text-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
-                  <div className="text-cyan-400 text-xs sm:text-sm font-bold mb-2 uppercase tracking-[0.2em] relative z-10">
-                    ได้รับเป้าหมายใหม่
-                  </div>
-                  <div className="text-white text-3xl sm:text-4xl font-orbitron font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] relative z-10">
-                    <span className="opacity-80">ผลลัพธ์: </span><span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">{targetNumber}</span>
+            {gameState === 'TARGET_POPUP' && (
+              <div className="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-40 animate-fade-in">
+                <div className="bg-gradient-to-b from-cyan-900/40 to-transparent absolute top-0 inset-x-0 h-40 pointer-events-none" />
+                
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-cyan-400/20 blur-3xl rounded-full" />
+                  <div className="bg-black/80 backdrop-blur-md border-2 border-cyan-400 px-10 py-8 rounded-3xl shadow-[0_0_50px_rgba(34,211,238,0.5)] text-center relative overflow-hidden flex flex-col items-center">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
+                    <div className="text-cyan-400 text-sm sm:text-lg font-bold mb-4 uppercase tracking-[0.3em] relative z-10 animate-pulse">
+                      ได้รับเป้าหมายใหม่
+                    </div>
+                    <div className="text-white text-5xl sm:text-7xl font-orbitron font-black drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] relative z-10">
+                      <span className="opacity-80 text-3xl sm:text-5xl">ผลลัพธ์: </span>
+                      <span className="text-yellow-400 drop-shadow-[0_0_30px_rgba(250,204,21,0.8)]">{targetNumber}</span>
+                    </div>
+                    <p className="text-cyan-100/70 mt-6 text-sm sm:text-base font-sans relative z-10 max-w-sm">
+                      ยิงรถถังที่มีสมการตรงกับผลลัพธ์นี้<br/>ระวังอย่ายิงผิดคัน!
+                    </p>
                   </div>
                 </div>
+
+                <button
+                  id="acknowledge-target-btn"
+                  onClick={() => engineRef.current?.resumeFromTarget()}
+                  className="group relative px-10 py-4 bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-500 hover:to-blue-600 active:scale-95 text-white font-bold text-lg rounded-2xl shadow-[0_0_30px_rgba(34,211,238,0.5)] border border-cyan-400/50 flex items-center justify-center gap-3 transition-all overflow-hidden z-10"
+                >
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                  <span className="font-sans tracking-wider relative z-10">กดรับทราบเพื่อเริ่มด่าน</span>
+                </button>
               </div>
             )}
 
