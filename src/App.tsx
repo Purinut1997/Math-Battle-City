@@ -11,7 +11,7 @@ export default function App() {
   const engineRef = useRef<GameEngine | null>(null);
 
   const [gameState, setGameState] = useState<
-    'MENU' | 'PLAYING' | 'PAUSED' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION'
+    'MENU' | 'PLAYING' | 'หยุดพักเกม' | 'GAMEOVER' | 'VICTORY' | 'LEVEL_TRANSITION'
   >('MENU');
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -98,7 +98,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050814] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#111827] via-[#050814] to-black flex flex-col items-center justify-center p-2 sm:p-4 font-sans select-none overflow-x-hidden text-gray-100">
+    <div className="h-[100dvh] w-screen bg-[#050814] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#111827] via-[#050814] to-black flex flex-col items-center justify-center font-sans select-none overflow-hidden text-gray-100 p-1 sm:p-4">
       
       {/* Decorative Grid Background */}
       <div className="fixed inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDMpIiBzdHJva2Utd2lkdGg9IjEiLz4KPC9zdmc+')] pointer-events-none opacity-50 z-0" />
@@ -112,47 +112,51 @@ export default function App() {
         </p>
       </div>
 
-      {/* Top Banner / Title Header */}
-      <header className="mb-3 text-center z-10 relative">
-        <h1 className="font-orbitron text-2xl sm:text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] flex items-center justify-center gap-3">
-          <Gamepad2 className="text-cyan-400" size={28} />
-          MATH BATTLE
-          <span className="text-xs sm:text-sm bg-blue-950/50 text-cyan-300 px-3 py-1 rounded-full border border-cyan-500/30 font-sans tracking-normal shadow-[0_0_10px_rgba(34,211,238,0.2)] backdrop-blur-sm">
-            Operation Number Shield
-          </span>
-        </h1>
-      </header>
+      <div className="w-full h-full max-w-[900px] flex flex-col items-center relative z-10">
+        
+        {/* Top Banner / Title Header (Hidden during play on mobile to maximize space) */}
+        <header className={`text-center shrink-0 transition-all duration-300 ${gameState !== 'MENU' ? 'hidden sm:block sm:mb-2' : 'mb-2 sm:mb-4'}`}>
+          <h1 className="font-orbitron text-xl sm:text-3xl font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 drop-shadow-[0_0_15px_rgba(34,211,238,0.4)] flex items-center justify-center gap-2 sm:gap-3">
+            <Gamepad2 className="text-cyan-400" size={24} />
+            MATH BATTLE CITY
+            <span className="text-[10px] sm:text-sm bg-blue-950/50 text-cyan-300 px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-cyan-500/30 font-sans tracking-normal shadow-[0_0_10px_rgba(34,211,238,0.2)] backdrop-blur-sm">
+              ยุทธการโล่ตัวเลข
+            </span>
+          </h1>
+        </header>
 
-      {/* Main Arcade Frame Container */}
-      <div className="w-full max-w-[720px] flex flex-col items-center z-10 relative">
-        {/* Arcade Screen Bezel */}
-        <div className="w-full bg-gradient-to-b from-[#1a1c29] to-[#0f111a] p-2 sm:p-3 rounded-2xl sm:rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-cyan-500/20 backdrop-blur-sm relative overflow-hidden">
-          
-          {/* Subtle bezel glow */}
-          <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
-          
-          {/* Top HUD Bar */}
-          <HUD
-            level={level}
-            lives={lives}
-            score={score}
-            timer={timer}
-            targetNumber={targetNumber}
-            isMuted={isMuted}
-            isPaused={gameState === 'PAUSED'}
-            onToggleSound={handleToggleSound}
-            onTogglePause={handleTogglePause}
-          />
+        {/* Main Arcade Frame Container */}
+        <div className="w-full flex-1 min-h-0 flex flex-col items-center relative">
+          {/* Arcade Screen Bezel */}
+          <div className="w-full h-full flex flex-col bg-gradient-to-b from-[#1a1c29] to-[#0f111a] p-1 sm:p-2 rounded-xl sm:rounded-2xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.8)] ring-1 ring-cyan-500/20 backdrop-blur-sm relative overflow-hidden">
+            
+            {/* Subtle bezel glow */}
+            <div className="absolute top-0 left-1/4 right-1/4 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent" />
+            
+            {/* Top HUD Bar */}
+            <div className="shrink-0">
+              <HUD
+                level={level}
+                lives={lives}
+                score={score}
+                timer={timer}
+                targetNumber={targetNumber}
+                isMuted={isMuted}
+                isPaused={gameState === 'หยุดพักเกม'}
+                onToggleSound={handleToggleSound}
+                onTogglePause={handleTogglePause}
+              />
+            </div>
 
-          {/* CRT Game Screen with Aspect Ratio Scaling */}
-          <div className="relative w-full aspect-[680/560] bg-black overflow-hidden rounded-b-xl sm:rounded-b-2xl border border-white/5 shadow-inner">
-            <canvas
-              ref={canvasRef}
-              width={CANVAS_WIDTH}
-              height={CANVAS_HEIGHT}
-              className="w-full h-full block image-pixelated relative z-0"
-              style={{ imageRendering: 'pixelated' }}
-            />
+            {/* CRT Game Screen with Aspect Ratio Scaling */}
+            <div className="relative w-full flex-1 min-h-0 bg-black overflow-hidden rounded-b-lg border border-white/5 shadow-inner flex items-center justify-center">
+              <canvas
+                ref={canvasRef}
+                width={CANVAS_WIDTH}
+                height={CANVAS_HEIGHT}
+                className="max-w-full max-h-full w-auto h-auto object-contain block image-pixelated relative z-0"
+                style={{ imageRendering: 'pixelated', aspectRatio: `${CANVAS_WIDTH}/${CANVAS_HEIGHT}` }}
+              />
 
             {/* CRT Scanline overlay effect */}
             <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,3px_100%] z-10 mix-blend-overlay" />
@@ -191,7 +195,7 @@ export default function App() {
                   >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <Play size={24} className="fill-current drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] relative z-10" />
-                    <span className="font-orbitron tracking-widest relative z-10">PRESS START</span>
+                    <span className="font-orbitron tracking-widest relative z-10">กดเริ่มเกม</span>
                   </button>
 
                   <button
@@ -206,19 +210,19 @@ export default function App() {
 
                 {/* Footer Watermark */}
                 <div className="w-full flex items-center justify-between text-[11px] text-white/40 pt-4 border-t border-white/10 relative z-10">
-                  <span className="font-sans">PC: WASD / Spacebar • Mobile: Joystick / Button</span>
+                  <span className="font-sans">PC: WASD / Spacebar • มือถือ: จอยสติ๊ก / ปุ่มยิง</span>
                   <span className="text-cyan-500/80 font-bold tracking-wider">Created by MIKPURINUT</span>
                 </div>
               </div>
             )}
 
-            {/* HOW TO PLAY MODAL */}
+            {/* กติกาการเล่น MODAL */}
             {showHowToPlay && (
               <div className="absolute inset-0 bg-black/90 backdrop-blur-md flex flex-col items-center justify-between p-6 text-left z-40 overflow-y-auto animate-fade-in">
                 <div className="w-full max-w-md relative z-10">
                   <h3 className="font-orbitron text-2xl font-black text-cyan-400 text-center mb-6 flex items-center justify-center gap-3 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
                     <Shield size={24} className="text-cyan-300" />
-                    HOW TO PLAY
+                    กติกาการเล่น
                   </h3>
 
                   <div className="space-y-3 text-sm text-cyan-50/90 bg-cyan-950/20 p-5 rounded-2xl border border-cyan-500/20 shadow-[inset_0_0_20px_rgba(34,211,238,0.05)] backdrop-blur-sm">
@@ -271,17 +275,17 @@ export default function App() {
                 <div className="h-[1px] w-48 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mb-6" />
                 <p className="text-cyan-200/80 tracking-widest uppercase text-sm font-bold flex items-center gap-3">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                  Preparing Stage {level + 1}
+                  กำลังเตรียมตัวสู่ด่านที่ {level + 1}
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
                 </p>
               </div>
             )}
 
-            {/* PAUSE OVERLAY */}
-            {gameState === 'PAUSED' && (
+            {/* พักเกม OVERLAY */}
+            {gameState === 'หยุดพักเกม' && (
               <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center text-center z-30 animate-fade-in">
                 <h3 className="font-orbitron text-4xl sm:text-5xl font-black text-white/90 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] tracking-[0.2em] mb-8">
-                  PAUSED
+                  หยุดพักเกม
                 </h3>
                 <button
                   id="resume-btn"
@@ -290,7 +294,7 @@ export default function App() {
                 >
                   <div className="absolute inset-0 bg-cyan-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   <Play size={20} className="fill-current relative z-10" /> 
-                  <span className="font-orbitron tracking-widest relative z-10">RESUME</span>
+                  <span className="font-orbitron tracking-widest relative z-10">เล่นต่อ</span>
                 </button>
               </div>
             )}
@@ -301,33 +305,33 @@ export default function App() {
                 <div className="bg-black/60 backdrop-blur-md border border-cyan-500/50 px-8 py-4 rounded-3xl shadow-[0_0_40px_rgba(34,211,238,0.4)] text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
                   <div className="text-cyan-400 text-xs sm:text-sm font-bold mb-2 uppercase tracking-[0.2em] relative z-10">
-                    NEW TARGET ACQUIRED
+                    ได้รับเป้าหมายใหม่
                   </div>
                   <div className="text-white text-3xl sm:text-4xl font-orbitron font-black drop-shadow-[0_0_10px_rgba(255,255,255,0.5)] relative z-10">
-                    <span className="opacity-80">SOLVE: </span><span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">{targetNumber}</span>
+                    <span className="opacity-80">ผลลัพธ์: </span><span className="text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.6)]">{targetNumber}</span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* GAME OVER OVERLAY */}
+            {/* จบเกม OVERLAY */}
             {gameState === 'GAMEOVER' && (
               <div className="absolute inset-0 bg-rose-950/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 animate-fade-in">
                 
                 <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-rose-900/40 to-transparent pointer-events-none" />
                 
                 <h2 className="font-orbitron text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-rose-400 to-red-600 drop-shadow-[0_0_25px_rgba(225,29,72,0.6)] tracking-wider mb-2 relative z-10">
-                  GAME OVER
+                  จบเกม
                 </h2>
                 <p className="text-sm sm:text-base text-rose-200/80 mb-8 font-sans relative z-10">
                   ฐานบัญชาการถูกทำลาย หรือ พลังชีวิตหมดลง
                 </p>
 
                 <div className="bg-black/40 backdrop-blur-sm px-10 py-6 rounded-3xl border border-rose-500/30 mb-8 shadow-inner relative z-10">
-                  <div className="text-xs text-rose-300/80 uppercase tracking-widest font-bold mb-1">Final Score</div>
+                  <div className="text-xs text-rose-300/80 uppercase tracking-widest font-bold mb-1">คะแนนรวม</div>
                   <div className="font-orbitron text-4xl sm:text-5xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] mb-4">{score.toLocaleString().padStart(5, '0')}</div>
                   <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-rose-500/50 to-transparent mb-4" />
-                  <div className="text-sm text-rose-200">Survived to Stage: <span className="font-orbitron font-bold text-amber-400 text-lg ml-2">{level}</span></div>
+                  <div className="text-sm text-rose-200">ผ่านถึงด่านที่: <span className="font-orbitron font-bold text-amber-400 text-lg ml-2">{level}</span></div>
                 </div>
 
                 <div className="flex gap-4 relative z-10">
@@ -338,7 +342,7 @@ export default function App() {
                   >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <RotateCcw size={20} className="relative z-10" />
-                    <span className="font-orbitron tracking-widest relative z-10">RESTART</span>
+                    <span className="font-orbitron tracking-widest relative z-10">เล่นใหม่อีกครั้ง</span>
                   </button>
                 </div>
               </div>
@@ -354,17 +358,17 @@ export default function App() {
                 <Award size={64} className="text-yellow-400 mb-6 animate-[bounce_3s_infinite] drop-shadow-[0_0_30px_rgba(250,204,21,0.6)] relative z-10" />
                 
                 <h2 className="font-orbitron text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-yellow-300 to-amber-600 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)] mb-3 relative z-10">
-                  MISSION ACCOMPLISHED
+                  ภารกิจสำเร็จ
                 </h2>
                 <p className="text-sm sm:text-base text-cyan-200 mb-8 max-w-[80%] relative z-10">
                   คุณได้ปกป้อง Number Shield และปราบ Boss สำเร็จครบทั้ง 10 ด่าน!
                 </p>
 
                 <div className="bg-black/50 backdrop-blur-md px-10 py-6 rounded-3xl border border-amber-500/30 mb-8 shadow-inner relative z-10">
-                  <div className="text-xs text-amber-300/80 uppercase tracking-widest font-bold mb-1">Total Score</div>
+                  <div className="text-xs text-amber-300/80 uppercase tracking-widest font-bold mb-1">คะแนนรวมสูงสุด</div>
                   <div className="font-orbitron text-5xl font-black text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.6)] mb-4">{score.toLocaleString().padStart(5, '0')}</div>
                   <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-amber-500/50 to-transparent mb-4" />
-                  <div className="text-sm text-cyan-200/80">Clear Time: <span className="font-orbitron font-bold text-white ml-2">{Math.floor(timer / 60)}M {timer % 60}S</span></div>
+                  <div className="text-sm text-cyan-200/80">เวลาที่ใช้: <span className="font-orbitron font-bold text-white ml-2">{Math.floor(timer / 60)}M {timer % 60}S</span></div>
                 </div>
 
                 <button
@@ -374,37 +378,38 @@ export default function App() {
                 >
                   <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   <Sparkles size={22} className="relative z-10" />
-                  <span className="font-orbitron tracking-widest relative z-10 text-lg">PLAY AGAIN</span>
+                  <span className="font-orbitron tracking-widest relative z-10 text-lg">เล่นใหม่อีกครั้ง</span>
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* Mobile Touch Controls (Always available on touch devices, visible under arcade frame) */}
+        {/* Mobile Touch Controls Overlay */}
         {isTouchDevice && (
-          <div className="w-full mt-2">
+          <div className="absolute inset-x-0 bottom-2 sm:bottom-6 z-50 pointer-events-none px-2 sm:px-8">
             <MobileControls onVirtualKey={handleVirtualKey} />
           </div>
         )}
 
         {/* Desktop Keyboard Controls Legend */}
         {!isTouchDevice && (
-          <div className="mt-4 w-full flex items-center justify-center gap-6 text-xs text-cyan-200/50 px-2 font-sans relative z-10">
+          <div className="shrink-0 mt-2 sm:mt-4 w-full flex items-center justify-center gap-4 sm:gap-6 text-[10px] sm:text-xs text-cyan-200/50 px-2 font-sans relative z-10">
             <div className="flex items-center gap-2">
               <span className="bg-white/5 px-2.5 py-1 rounded-md border border-white/10 text-white font-orbitron tracking-widest shadow-inner">WASD</span>
-              <span>MOVE</span>
+              <span>เคลื่อนที่</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="bg-white/5 px-2.5 py-1 rounded-md border border-white/10 text-white font-orbitron tracking-widest shadow-inner">SPACE</span>
-              <span>FIRE</span>
+              <span>ยิง</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="bg-white/5 px-2.5 py-1 rounded-md border border-white/10 text-white font-orbitron tracking-widest shadow-inner">P</span>
-              <span>PAUSE</span>
+              <span>พักเกม</span>
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

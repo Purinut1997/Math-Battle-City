@@ -37,7 +37,7 @@ export function HUD({
       <div className="flex items-center gap-3 sm:gap-5 z-20">
         {/* Level Badge */}
         <div className="flex items-center gap-2 bg-white/5 px-3 py-1.5 rounded-lg border border-white/10 shadow-inner">
-          <span className="text-cyan-400 font-bold uppercase tracking-wider text-[10px] sm:text-xs">Stage</span>
+          <span className="text-cyan-400 font-bold uppercase tracking-wider text-[10px] sm:text-xs">ด่าน</span>
           <span className="font-orbitron text-white font-bold text-base sm:text-lg drop-shadow-[0_0_8px_rgba(34,211,238,0.6)]">{level}</span>
         </div>
         
@@ -70,12 +70,11 @@ export function HUD({
               {targetNumber > 0 ? targetNumber : '-'}
             </span>
           </div>
-          
-          {/* Subtle label overlay */}
-          <span className="absolute -top-2 bg-black px-2 text-[9px] text-green-400 tracking-widest font-bold uppercase border border-green-500/30 rounded-full">
-            Target
-          </span>
         </div>
+        {/* Subtle label overlay */}
+        <span className="absolute -top-2 bg-black px-2 text-[9px] text-green-400 tracking-widest font-bold uppercase border border-green-500/30 rounded-full z-10">
+          Target
+        </span>
       </div>
 
       {/* Right: Stats & Controls */}

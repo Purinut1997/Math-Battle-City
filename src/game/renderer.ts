@@ -261,7 +261,7 @@ export class PixelRenderer {
     ctx.font = '900 12px "Orbitron", "Courier New", Courier, monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`TARGET: ${targetNumber}`, cx, hoverY + badgeH / 2);
+    ctx.fillText(`เป้าหมาย: ${targetNumber}`, cx, hoverY + badgeH / 2);
     ctx.restore();
   }
 
@@ -636,7 +636,7 @@ export class PixelRenderer {
     ctx.font = '900 20px "Orbitron", "Courier New", Courier, monospace';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`BOSS: ${equation}`, cx, bannerY + bannerH / 2);
+    ctx.fillText(`บอส: ${equation}`, cx, bannerY + bannerH / 2);
     ctx.restore();
 
     // Health Bar

@@ -90,7 +90,7 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto flex items-center justify-between px-6 py-4 select-none touch-none bg-[#1e1e1e]/90 backdrop-blur-sm rounded-3xl border border-[#444] shadow-xl mt-2">
+    <div className="w-full max-w-2xl mx-auto flex items-end justify-between select-none touch-none pointer-events-none">
       {/* Analog Joystick */}
       <div 
         ref={joystickBaseRef}
@@ -98,7 +98,7 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-36 h-36 bg-[#2a2a2a] rounded-full border-4 border-[#333] shadow-inner flex items-center justify-center touch-none cursor-pointer"
+        className="relative w-32 h-32 sm:w-40 sm:h-40 bg-black/40 backdrop-blur-sm rounded-full border-2 border-white/20 shadow-[0_0_20px_rgba(0,0,0,0.5)] flex items-center justify-center touch-none cursor-pointer pointer-events-auto opacity-70 hover:opacity-100 transition-opacity"
       >
         {/* Directional markers */}
         <div className="absolute top-2 w-2 h-2 bg-[#444] rounded-full" />
@@ -116,9 +116,9 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
       </div>
 
       {/* Action Buttons Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 mb-4 sm:mb-6 mr-2 sm:mr-6">
         {/* Fire Button (A) */}
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center pointer-events-auto">
           <button
             id="action-fire-btn"
             onTouchStart={(e) => handleTouchStart(' ', e)}
@@ -126,7 +126,7 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
             onMouseDown={(e) => handleTouchStart(' ', e)}
             onMouseUp={(e) => handleTouchEnd(' ', e)}
             onMouseLeave={(e) => handleTouchEnd(' ', e)}
-            className="w-24 h-24 bg-gradient-to-b from-[#e83020] to-[#991508] active:from-[#800f05] active:to-[#550a03] rounded-full flex flex-col items-center justify-center text-white font-bold shadow-lg shadow-red-950/60 border-2 border-red-400 active:scale-95 ring-4 ring-[#2d2d2d] touch-none"
+            className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-b from-[#e83020]/90 to-[#991508]/90 active:from-[#800f05] active:to-[#550a03] rounded-full flex flex-col items-center justify-center text-white font-bold shadow-[0_0_30px_rgba(225,29,72,0.6)] border-2 border-red-400/50 active:scale-95 ring-4 ring-black/40 touch-none backdrop-blur-sm opacity-80 hover:opacity-100 transition-opacity"
             aria-label="Fire Button"
           >
             <Crosshair size={28} className="mb-1" />
