@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Kanit', sans-serif;
+  --font-orbitron: 'Orbitron', sans-serif;
+}
+
+body {
+  background-color: #050505;
+  color: #ffffff;
+  overflow: hidden;
+  touch-action: none;
+}

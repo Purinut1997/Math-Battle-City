@@ -1,0 +1,6 @@
+{
+  "name": "Math Battle City",
+  "description": "เกมยิงรถถังคณิตศาสตร์ Operation Number Shield",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
