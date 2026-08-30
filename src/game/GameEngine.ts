@@ -318,32 +318,37 @@ export class GameEngine {
 
     const slot = spawnSlots[Math.floor(Math.random() * spawnSlots.length)];
 
-    // Check if slot is occupied
+    // Check if slot is occupied by an enemy or a warning
     const occupied = this.enemies.some(
       (e) => e.active && Math.abs(e.x - slot.x) < TILE_SIZE && Math.abs(e.y - slot.y) < TILE_SIZE
     ) || this.spawnWarnings.some(
-
-      (e) => e.active && Math.abs(e.x - slot.x) < TILE_SIZE && Math.abs(e.y - slot.y) < TILE_SIZE
+      (w) => Math.abs(w.x - slot.x) < TILE_SIZE && Math.abs(w.y - slot.y) < TILE_SIZE
     );
     if (occupied) return;
 
-    this.enemies.push({
+    this.spawnWarnings.push({
       x: slot.x + 2,
       y: slot.y + 2,
-      width: TILE_SIZE - 4,
-      height: TILE_SIZE - 4,
-      speed: ENEMY_SPEED,
-      direction: 'DOWN',
-      equation,
-      isCorrect,
-      enraged: false,
-      active: true,
-      type,
-      numberValue,
+      timer: 1.5, // 1.5 seconds warning
+      maxTimer: 1.5,
+      enemyToSpawn: {
+        x: slot.x + 2,
+        y: slot.y + 2,
+        width: TILE_SIZE - 4,
+        height: TILE_SIZE - 4,
+        speed: ENEMY_SPEED,
+        direction: 'DOWN',
+        equation,
+        isCorrect,
+        enraged: false,
+        active: true,
+        type,
+        numberValue,
+      }
     });
 
-    // Spawn Spark effect
-    this.createExplosion(slot.x + TILE_SIZE / 2, slot.y + TILE_SIZE / 2, '#ffffff', 8);
+    // Spawn Spark effect (for warning start)
+    this.createExplosion(slot.x + TILE_SIZE / 2, slot.y + TILE_SIZE / 2, '#ffaa00', 8);
   }
 
   shoot() {
