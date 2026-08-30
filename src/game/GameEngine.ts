@@ -1,4 +1,4 @@
-import { Base, Boss, Bullet, Direction, Enemy, Particle, Player, PowerUp, PowerUpType, Wall } from './types';
+import { Base, Boss, Bullet, Direction, Enemy, Particle, Player, PowerUp, PowerUpType, Wall, SpawnWarning } from './types';
 import {
   ARENA_OFFSET_X,
   ARENA_OFFSET_Y,
@@ -42,6 +42,7 @@ export class GameEngine {
   base: Base;
   bullets: Bullet[] = [];
   enemies: Enemy[] = [];
+  spawnWarnings: SpawnWarning[] = [];
   walls: Wall[] = [];
   powerups: PowerUp[] = [];
   particles: Particle[] = [];
@@ -201,6 +202,7 @@ export class GameEngine {
     this.state = 'TARGET_POPUP';
     this.bullets = [];
     this.enemies = [];
+    this.spawnWarnings = [];
     this.powerups = [];
     this.particles = [];
     this.kills = 0;
@@ -283,12 +285,12 @@ export class GameEngine {
   spawnEnemyWave() {
     if (this.level === 10) {
       // Boss stage spawns minion tanks with plain numbers
-      if (this.enemies.length < 3) {
+      if (this.enemies.length + this.spawnWarnings.length < 3) {
         const num = MINION_NUMBERS[Math.floor(Math.random() * MINION_NUMBERS.length)];
         this.spawnEnemy(num.toString(), num === BOSS_TARGET_X, 'MINION', num);
       }
     } else {
-      if (this.enemies.length < this.maxActiveEnemies && this.remainingTanks > 0) {
+      if ((this.enemies.length + this.spawnWarnings.length) < this.maxActiveEnemies && this.remainingTanks > 0) {
         const problem = getProblemForLevel(this.level);
         const eqSet = generateEquationSet(problem);
 
@@ -318,6 +320,9 @@ export class GameEngine {
 
     // Check if slot is occupied
     const occupied = this.enemies.some(
+      (e) => e.active && Math.abs(e.x - slot.x) < TILE_SIZE && Math.abs(e.y - slot.y) < TILE_SIZE
+    ) || this.spawnWarnings.some(
+
       (e) => e.active && Math.abs(e.x - slot.x) < TILE_SIZE && Math.abs(e.y - slot.y) < TILE_SIZE
     );
     if (occupied) return;
@@ -523,6 +528,17 @@ export class GameEngine {
     if (this.spawnTimer <= 0) {
       this.spawnTimer = 1.6;
       this.spawnEnemyWave();
+    }
+
+    // Process Spawn Warnings
+    for (let i = this.spawnWarnings.length - 1; i >= 0; i--) {
+      const warning = this.spawnWarnings[i];
+      warning.timer -= dt;
+      if (warning.timer <= 0) {
+        this.enemies.push(warning.enemyToSpawn);
+        this.spawnWarnings.splice(i, 1);
+        this.createExplosion(warning.x + TILE_SIZE / 2, warning.y + TILE_SIZE / 2, '#ff0000', 15);
+      }
     }
 
     // Player Movement
@@ -914,6 +930,7 @@ export class GameEngine {
         this.kills = 0;
         this.remainingTanks = getKillsRequiredForLevel(this.level);
         this.enemies = [];
+        this.spawnWarnings = [];
         this.bullets = [];
         this.powerups = [];
         this.respawnInvulnerability = 2.5;
@@ -1008,6 +1025,30 @@ export class GameEngine {
         this.boss.maxHp,
         this.boss.equation
       );
+    }
+
+    // 8.5 Draw Spawn Warnings
+    for (const w of this.spawnWarnings) {
+      // Blink logic (5 blinks over 1.5s -> 0.15s per blink state change)
+      const flashState = Math.floor(w.timer / 0.15) % 2 === 0;
+      if (flashState) {
+        this.ctx.fillStyle = 'rgba(255, 0, 0, 0.4)';
+        this.ctx.fillRect(w.x - 2, w.y - 2, TILE_SIZE, TILE_SIZE);
+        
+        // Draw crosshair or warning icon
+        this.ctx.strokeStyle = '#ff0000';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(w.x - 2 + TILE_SIZE / 2, w.y - 2);
+        this.ctx.lineTo(w.x - 2 + TILE_SIZE / 2, w.y - 2 + TILE_SIZE);
+        this.ctx.moveTo(w.x - 2, w.y - 2 + TILE_SIZE / 2);
+        this.ctx.lineTo(w.x - 2 + TILE_SIZE, w.y - 2 + TILE_SIZE / 2);
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        this.ctx.arc(w.x - 2 + TILE_SIZE / 2, w.y - 2 + TILE_SIZE / 2, TILE_SIZE / 3, 0, Math.PI * 2);
+        this.ctx.stroke();
+      }
     }
 
     // 9. Draw Enemies

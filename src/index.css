@@ -5,7 +5,15 @@
   --font-orbitron: 'Orbitron', sans-serif;
 }
 
-body {
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  position: fixed;
+  left: 0;
+  top: 0;
   background-color: #050505;
   color: #ffffff;
 }

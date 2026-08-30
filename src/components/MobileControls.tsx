@@ -90,7 +90,7 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex items-end justify-between select-none touch-none pointer-events-none">
+    <div className="w-full flex items-end justify-between select-none touch-none pointer-events-none">
       {/* Analog Joystick */}
       <div 
         ref={joystickBaseRef}
@@ -116,7 +116,7 @@ export function MobileControls({ onVirtualKey }: MobileControlsProps) {
       </div>
 
       {/* Action Buttons Section */}
-      <div className="flex items-center gap-4 mb-4 sm:mb-6 mr-2 sm:mr-6">
+      <div className="flex items-center gap-4 mr-2 sm:mr-6">
         {/* Fire Button (A) */}
         <div className="flex flex-col items-center pointer-events-auto">
           <button

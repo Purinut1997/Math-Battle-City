@@ -76,3 +76,11 @@ export interface Particle {
   color: string;
   size: number;
 }
+
+export interface SpawnWarning {
+  x: number;
+  y: number;
+  enemyToSpawn: Enemy;
+  timer: number;
+  maxTimer: number;
+}

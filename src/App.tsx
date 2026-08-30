@@ -345,12 +345,18 @@ export default function App() {
                 <div className="flex gap-4 relative z-10">
                   <button
                     id="restart-game-btn"
-                    onClick={() => handleStartGame(1)}
+                    onClick={() => handleStartGame(level)}
                     className="group relative px-8 py-4 bg-gradient-to-r from-rose-700 to-red-900 hover:from-rose-600 hover:to-red-800 active:scale-95 text-white font-bold rounded-2xl shadow-[0_0_30px_rgba(225,29,72,0.4)] border border-rose-400/50 flex items-center justify-center gap-3 transition-all overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <RotateCcw size={20} className="relative z-10" />
-                    <span className="font-orbitron tracking-widest relative z-10">เล่นใหม่อีกครั้ง</span>
+                    <span className="font-orbitron tracking-widest relative z-10">เล่นด่านนี้ใหม่</span>
+                  </button>
+                  <button
+                    onClick={() => handleStartGame(1)}
+                    className="group relative px-8 py-4 bg-white/10 hover:bg-white/20 active:scale-95 text-white font-bold rounded-2xl border border-white/20 flex items-center justify-center transition-all backdrop-blur-md overflow-hidden"
+                  >
+                    <span className="font-orbitron tracking-widest relative z-10 text-sm">เริ่มใหม่แต่แรก</span>
                   </button>
                 </div>
               </div>
@@ -395,8 +401,10 @@ export default function App() {
 
         {/* Mobile Touch Controls Overlay */}
         {isTouchDevice && (
-          <div className="absolute inset-x-0 bottom-2 sm:bottom-6 z-50 pointer-events-none px-2 sm:px-8">
-            <MobileControls onVirtualKey={handleVirtualKey} />
+          <div className="fixed inset-x-0 bottom-6 sm:bottom-10 z-[100] pointer-events-none px-6 sm:px-16 flex justify-center">
+            <div className="w-full max-w-[1200px]">
+              <MobileControls onVirtualKey={handleVirtualKey} />
+            </div>
           </div>
         )}
 
